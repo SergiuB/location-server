@@ -8,20 +8,18 @@ describe('CoordinateService', () => {
   let service;
   let connection;
 
-  const resolvedPromise = (data) => () => new Promise(resolve => resolve(data));
-
   const createDbIfNeeded = (conn) => {
     return r.dbList().contains(config.rethinkdb.db)
       .do(containsDb => r.branch(containsDb, {created: 0}, r.dbCreate(config.rethinkdb.db)))
       .run(conn)
-      .then(resolvedPromise(conn));
+      .then(() => Promise.resolve(conn));
   };
 
   const createTableIfNeeded = (conn) => {
     return r.tableList().contains(coordTable)
       .do(containsTable => r.branch(containsTable, {created: 0}, r.tableCreate(coordTable)))
       .run(conn)
-      .then(resolvedPromise(conn));
+      .then(() => Promise.resolve(conn));
   };
 
   before((done) => {

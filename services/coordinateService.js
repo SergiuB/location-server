@@ -20,7 +20,7 @@ class CoordinateService {
   getAllCoordinates() {
     const {connection, dbName, tableName} = this;
     return r.db(dbName).table(tableName).run(connection)
-      .then(cursor => new Promise(resolve => resolve(cursor.toArray().map(toLatLong))));
+      .then(cursor => Promise.resolve(cursor.toArray().map(toLatLong)));
   }
 }
 
