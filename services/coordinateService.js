@@ -1,17 +1,21 @@
 var r = require('rethinkdb');
 
 class CoordinateService {
-  constructor(connection) {
-    this.connection = connection;;
+  constructor({connection, dbName, tableName}) {
+    this.connection = connection;
+    this.dbName = dbName;
+    this.tableName = tableName;
   }
   storeCoordinates(coords){
-    return r.table('coordinates').insert([ coords ]).run(this.connection);
+    const {connection, dbName, tableName} = this;
+    return r.db(dbName).table(this.tableName).insert([ coords ]).run(connection);
   }
 
   getAllCoordinates() {
-    return r.db('test').table('coordinates').run(this.connection)
+    const {connection, dbName, tableName} = this;
+    return r.db(dbName).table(tableName).run(connection)
       .then(cursor => new Promise(resolve => resolve(cursor.toArray())));
   }
 }
 
-exports.getCoordinateServiceInstance = conn => new CoordinateService(conn);
+exports.getCoordinateServiceInstance = (config) => new CoordinateService(config);
