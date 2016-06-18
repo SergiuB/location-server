@@ -43,8 +43,7 @@ describe('CoordinateService', () => {
     service.storeCoordinates(sampleCoords)
       .then(service.getAllCoordinates.bind(service))
       .then(([first, ...rest]) => {
-        const {id, lat, long} = first;
-        expect({lat, long}).to.deep.equal(sampleCoords);
+        expect(first).to.deep.equal(sampleCoords);
         done();
       })
       .catch(done);
