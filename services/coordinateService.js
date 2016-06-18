@@ -16,6 +16,6 @@ class CoordinateService {
     return r.db(dbName).table(tableName).run(connection)
       .then(cursor => new Promise(resolve => resolve(cursor.toArray())));
   }
-}
+} 
 
 exports.getCoordinateServiceInstance = (config) => new CoordinateService(config);

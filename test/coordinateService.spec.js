@@ -2,10 +2,11 @@ const expect = require('chai').expect;
 const coordinateServiceFactory = require('../services/coordinateService');
 var r = require('rethinkdb');
 var config = require('../config.test');
-const coordTable = "coordinates";
+const coordTable = "test_coordinates";
 
 describe('CoordinateService', () => {
   let service;
+  let connection;
 
   const resolvedPromise = (data) => () => new Promise(resolve => resolve(data));
 
@@ -28,6 +29,7 @@ describe('CoordinateService', () => {
       .then(createDbIfNeeded)
       .then(createTableIfNeeded)
       .then(conn => {
+        connection = conn;
         service = coordinateServiceFactory.getCoordinateServiceInstance({
           connection: conn,
           dbName: config.rethinkdb.db,
@@ -37,7 +39,7 @@ describe('CoordinateService', () => {
   });
 
   it('stores coordinates', (done) => {
-    const sampleCoords = {lat: 1, long: 2};
+    const sampleCoords = {lat: Math.random(), long: Math.random()};
     service.storeCoordinates(sampleCoords)
       .then(service.getAllCoordinates.bind(service))
       .then(([first, ...rest]) => {
@@ -46,5 +48,10 @@ describe('CoordinateService', () => {
         done();
       })
       .catch(done);
+  });
+
+  after((done) => {
+    r.db(config.rethinkdb.db).tableDrop(coordTable).run(connection)
+      .then(() => done());
   });
 })
