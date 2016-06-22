@@ -11,10 +11,14 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.14.0",
+    "geolib": "^2.0.21",
+    "googlemaps": "^1.6.0",
+    "lodash": "^4.13.1",
     "rethinkdb": "^2.3.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^2.5.3"
+    "mocha": "^2.5.3",
+    "polyline": "^0.2.0"
   }
 }
