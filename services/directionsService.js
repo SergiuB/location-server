@@ -39,12 +39,12 @@ function getPathBetweenTwoLocations({origin, destination}) {
           resolve(points);
         }
       });
-  });
+  }); 
 }
 
 exports.getPath = (locations) => {
   const locationPairs = locations.map((value, index) => ({origin: locations[index-1], destination: value}));
-  const [invalid, ...validPairs] = locationPairs;
+  const [, ...validPairs] = locationPairs;
   const pathPromises = validPairs.map(getPathBetweenTwoLocations);
   return new Promise((resolve, reject) => {
     Promise.all(pathPromises)
