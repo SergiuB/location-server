@@ -24,7 +24,7 @@ function getFullPath(route) {
   return fullPath;
 }
 
-exports.getPath = ({origin, destination}) => {
+function getPathBetweenTwoLocations({origin, destination}) {
   var gm = new GoogleMapsAPI(gmaps);
   return new Promise((resolve, reject) => {
     gm.directions({
@@ -39,5 +39,16 @@ exports.getPath = ({origin, destination}) => {
           resolve(points);
         }
       });
+  });
+}
+
+exports.getPath = (locations) => {
+  const locationPairs = locations.map((value, index) => ({origin: locations[index-1], destination: value}));
+  const [invalid, ...validPairs] = locationPairs;
+  const pathPromises = validPairs.map(getPathBetweenTwoLocations);
+  return new Promise((resolve, reject) => {
+    Promise.all(pathPromises)
+      .then(paths => resolve(_.concat.apply(null, paths)))
+      .catch(reject);
   });
 };
