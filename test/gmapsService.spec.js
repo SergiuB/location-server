@@ -3,20 +3,6 @@ const directionsService = require('../services/gmapsService');
 const expect = require('chai').expect;
 
 describe('GmapsService', () => {
-  // it('returns a path between two coordinates', (done) => {
-  //   directionsService.getPath({ origin: 'Bucharest, Romania', destination: 'Chisinau, Moldavia' })
-  //     .then((path) => {
-  //       const firstPoint = path[0];
-  //       const lastPoint = path[path.length - 1];
-  //       const [expectedFirstPoint, expectedLastPoint] = [[ 44.42659, 26.10278 ], [ 55.75615, 37.6172 ]];
-  //       console.log(path.length);
-  //
-  //       expect(firstPoint).to.deep.equal(expectedFirstPoint);
-  //       expect(lastPoint).to.deep.equal(expectedLastPoint);
-  //       done();
-  //     })
-  //     .catch(done);
-  // });
   it('returns a path between multiple locations', (done) => {
     directionsService.getPath(['Bucharest, Romania', 'Chisinau, Moldavia', 'Moscow, Russia' ])
       .then((path) => {
