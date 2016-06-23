@@ -1,7 +1,7 @@
-const directionsService = require('../services/directionsService');
+const directionsService = require('../services/gmapsService');
 const expect = require('chai').expect;
 
-describe('DirectionsService', () => {
+describe('GmapsService', () => {
   // it('returns a path between two coordinates', (done) => {
   //   directionsService.getPath({ origin: 'Bucharest, Romania', destination: 'Chisinau, Moldavia' })
   //     .then((path) => {
