@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const directionsService = require('../services/gmapsService');
 const expect = require('chai').expect;
 
@@ -28,6 +29,18 @@ describe('GmapsService', () => {
         expect(firstPoint).to.deep.equal(expectedFirstPoint);
         expect(midPoint).to.deep.equal(expectedMidPoint);
         expect(lastPoint).to.deep.equal(expectedLastPoint);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('returns elevations for given points', (done) => {
+    // urcare Transfagarasan
+    directionsService.getPath(['45.56977227, 24.61139202', '45.59476204 , 24.62010384' ])
+      .then(directionsService.getElevations)
+      .then(elevations => {
+        expect(elevations).to.be.an('Array');
+        expect(_.last(elevations)).to.be.above(2000);
         done();
       })
       .catch(done);

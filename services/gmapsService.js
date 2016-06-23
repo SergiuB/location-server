@@ -1,9 +1,12 @@
 const {gmaps} = require('../config');
 const GoogleMapsAPI = require('googlemaps');
 
-var polyline = require('polyline');
-var geolib = require('geolib');
-var _ = require('lodash');
+const polyline = require('polyline');
+const geolib = require('geolib');
+const _ = require('lodash');
+const gm = new GoogleMapsAPI(gmaps);
+
+var LOCATIONS_PER_REQUEST = 300;
 
 function getDistances(points) {
   return points.map((point, index, all) => {
@@ -25,7 +28,6 @@ function getFullPath(route) {
 }
 
 function getPathBetweenTwoLocations({origin, destination}) {
-  var gm = new GoogleMapsAPI(gmaps);
   return new Promise((resolve, reject) => {
     gm.directions({
         origin,
@@ -39,7 +41,7 @@ function getPathBetweenTwoLocations({origin, destination}) {
           resolve(points);
         }
       });
-  }); 
+  });
 }
 
 exports.getPath = (locations) => {
@@ -52,3 +54,26 @@ exports.getPath = (locations) => {
       .catch(reject);
   });
 };
+
+function getElevationsSingleRequest(points) {
+  return new Promise((resolve, reject) => {
+    gm.elevationFromLocations({
+      locations: points.map(point => point.join(',')).join('|')
+    }, (error, result) => {
+      if (error || result.status !== 'OK') {
+        reject(error);
+      } else {
+        resolve(result.results.map(r => r.elevation))
+      }
+    });
+  });
+}
+
+exports.getElevations = (points) => {
+  return new Promise((resolve, reject) => {
+    const chunks = _.chunk(points, LOCATIONS_PER_REQUEST);
+    Promise.all(chunks.map(getElevationsSingleRequest))
+      .then(elevationChunks => resolve(_.concat.apply(null, elevationChunks)))
+      .catch(reject);
+  });
+}
